@@ -7,7 +7,6 @@ typedef struct {
     int tipo;
 } JogadorTeclado;
 
-void jogador_teclado_inicializa(JogadorTeclado *j, int tipo);
 void jogador_teclado_joga(JogadorTeclado *j, Tabuleiro *t);
 
 #endif
