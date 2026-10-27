@@ -22,17 +22,19 @@ int main() {
     jogador_atual = &j2;
     }
     
-    while (tabuleiro_temVencedor(&tabuleiro) == VAZIO) {
+    for (int i = 0; i < 9; i++) {
         tabuleiro_desenha(&tabuleiro);
         
-        char simbolo;
+        char simbolo[2];
         if (jogador_atual->tipo == JOGADOR_X) {
-            simbolo = 'X';
+            simbolo[0] = '1';
+            simbolo[1] = 'X';
         } else {
-            simbolo = 'O';
+            simbolo[0] = '2';
+            simbolo[1] = 'O';
         }
 
-        printf("\nVez do jogador (%c):\n", simbolo);
+        printf("\nVez do jogador %c (%c):\n", simbolo[0], simbolo[1]);
 
         jogador_teclado_joga(jogador_atual, &tabuleiro);
         tabuleiro_desenha(&tabuleiro);
@@ -42,6 +44,10 @@ int main() {
         } else {
             jogador_atual = &j1;
         }
+
+        if (tabuleiro_temVencedor(&tabuleiro) != VAZIO) {
+            break;
+        }
     }
 
     int resultado = tabuleiro_temVencedor(&tabuleiro);
@@ -50,7 +56,7 @@ int main() {
     } else if (resultado == JOGADOR_O) {
         printf("Jogador 2 (O) é o vencedor!\n");
     } else {
-        printf("Empate! Deu velha!\n");
+        printf("Empate, deu velha!\n");
     }
 
     return 0;
