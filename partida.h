@@ -8,6 +8,7 @@ typedef struct {
     JogadorTeclado j1;
     JogadorTeclado j2;
     JogadorTeclado *jogador_atual;
+    int vs_ia;
     Tabuleiro tabuleiro;
 } Partida;
 

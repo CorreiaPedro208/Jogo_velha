@@ -4,10 +4,23 @@
 #include "jogador_teclado.h"
 #include "tabuleiro.h"
 #include "partida.h"
+#include "jogadorIA.h"
 
 void configuraJogadores(Partida *p) {
-    jogador_teclado_inicializa(&(p->j1), JOGADOR_X);
-    jogador_teclado_inicializa(&(p->j2), JOGADOR_O);
+    p->j1.tipo = JOGADOR_X;
+    p->j2.tipo = JOGADOR_O;
+
+    do {
+        printf("\n=== MODO DE JOGO ===\n");
+        printf("0 - Humano vs Humano\n");
+        printf("1 - Humano vs IA\n");
+        printf("Escolha: ");
+        scanf("%d", &p->vs_ia);
+
+        if (p->vs_ia != 0 && p->vs_ia != 1) {
+            printf("Opcao invalida! Digite 0 para Humano vs Humano ou 1 para Jogar vs IA.\n");
+        }
+    } while (p->vs_ia != 0 && p->vs_ia != 1);
 
     srand(time(NULL));
     if (rand() % 2 == 0) {
@@ -34,7 +47,12 @@ void inicia(Partida *p) {
 
         printf("\nVez do jogador %c (%c):\n", simbolo[0], simbolo[1]);
 
-        jogador_teclado_joga(p->jogador_atual, &(p->tabuleiro));
+        if (p->jogador_atual == &(p->j2) && p->vs_ia) {
+            ia_joga((JogadorIA *)p->jogador_atual, &(p->tabuleiro));
+        } else {
+            jogador_teclado_joga(p->jogador_atual, &(p->tabuleiro));
+        }
+
         tabuleiro_desenha(&(p->tabuleiro));
 
         if (p->jogador_atual == &(p->j1)) {
