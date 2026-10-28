@@ -64,67 +64,41 @@ int regra1(JogadorIA *j, Tabuleiro *t) {
     return 0;
 }
 
-int conta_ameacas_vitoria(Tabuleiro *t, int tipo) {
-    int vitorias_possiveis = 0;
-
-    for (int i = 0; i < 3; i++) {
-        int pecas_linha = 0, vazios_linha = 0;
-        int pecas_coluna = 0, vazios_coluna = 0;
-
-        for (int k = 0; k < 3; k++) {
-            if (t->tabuleiro[i][k] == tipo) pecas_linha++;
-            else if (t->tabuleiro[i][k] == VAZIO) vazios_linha++;
-
-            if (t->tabuleiro[k][i] == tipo) pecas_coluna++;
-            else if (t->tabuleiro[k][i] == VAZIO) vazios_coluna++;
-        }
-
-        if (pecas_linha == 2 && vazios_linha == 1) {
-            vitorias_possiveis++;
-        }
-
-        if (pecas_coluna == 2 && vazios_coluna == 1) {
-            vitorias_possiveis++;
-        }
-    }
-
-    int pecas_diag1 = 0, vazios_diag1 = 0;
-    int pecas_diag2 = 0, vazios_diag2 = 0;
-
-    for (int k = 0; k < 3; k++) {
-        if (t->tabuleiro[k][k] == tipo) pecas_diag1++;
-        else if (t->tabuleiro[k][k] == VAZIO) vazios_diag1++;
-
-        if (t->tabuleiro[k][2 - k] == tipo) pecas_diag2++;
-        else if (t->tabuleiro[k][2 - k] == VAZIO) vazios_diag2++;
-    }
-
-    if (pecas_diag1 == 2 && vazios_diag1 == 1) {
-        vitorias_possiveis++;
-    }
-    
-    if (pecas_diag2 == 2 && vazios_diag2 == 1) {
-        vitorias_possiveis++;
-    }
-
-    return vitorias_possiveis;
-}
 
 int regra2(JogadorIA *j, Tabuleiro *t) {
-    for (int linha = 0; linha < 3; linha++) {
-        for (int coluna = 0; coluna < 3; coluna++) {
-            
-            if (t->tabuleiro[linha][coluna] == VAZIO) {
-                t->tabuleiro[linha][coluna] = j->tipo;
-                
-                int total_chances = conta_ameacas_vitoria(t, j->tipo);
-                
-                t->tabuleiro[linha][coluna] = VAZIO;
+    int qtd_marcacoes, soma_linha, soma_coluna, soma_diagonal;
 
-                if (total_chances >= 2) {
-                    tabuleiro_marcaJogada(t, linha, coluna, j->tipo);
-                    return 1;
+    for (int i = 0; i < 3; i++) {
+        for (int k = 0; k < 3; k++) {
+            if (t->tabuleiro[i][k] != VAZIO) {
+                continue;
+            }
+            
+            soma_linha = t->tabuleiro[i][0] + t->tabuleiro[i][1] + t->tabuleiro[i][2];
+            soma_coluna = t->tabuleiro[0][k] + t->tabuleiro[1][k] + t->tabuleiro[2][k];
+
+            if (soma_linha == JOGADOR_O) {
+                qtd_marcacoes++;
+            }
+            if (soma_coluna == JOGADOR_O) {
+                qtd_marcacoes++;    
+            }
+            
+            if (i == k) {
+                soma_diagonal = t->tabuleiro[0][0] + t->tabuleiro[1][1] + t->tabuleiro[2][2];
+                if (soma_diagonal == JOGADOR_O) {
+                    qtd_marcacoes++;
                 }
+            }
+            else if (i + k == 2) {
+                soma_diagonal = t->tabuleiro[2][0] + t->tabuleiro[1][1] + t->tabuleiro[0][2];
+                if (soma_diagonal == JOGADOR_O) {
+                    qtd_marcacoes++;
+                }
+            }
+
+            if (qtd_marcacoes >= 2){
+                return 1;
             }
         }
     }
