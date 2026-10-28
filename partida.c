@@ -32,8 +32,17 @@ void configuraJogadores(Partida *p) {
 
 void inicia(Partida *p) {
     tabuleiro_inicializa(&(p->tabuleiro));
-    
-    for (int i = 0; i < 9; i++) {
+
+    JogadorTeclado *jogador_inicio = p->jogador_atual;
+    int end_game = 0;
+    int qtd_jogadas = 0;
+    char jogar_novamente = 'N';
+    while (qtd_jogadas < 9 && !end_game) {
+
+        if (qtd_jogadas == 0) {
+            jogador_inicio = p->jogador_atual;
+        }
+        qtd_jogadas++;
         tabuleiro_desenha(&(p->tabuleiro));
         
         char simbolo[2];
@@ -52,26 +61,41 @@ void inicia(Partida *p) {
         } else {
             jogador_teclado_joga(p->jogador_atual, &(p->tabuleiro));
         }
-
+        
         tabuleiro_desenha(&(p->tabuleiro));
 
+        int resultado = tabuleiro_temVencedor(&(p->tabuleiro));
+        if (resultado == JOGADOR_X){
+            printf("Jogador 1 (X) é o vencedor!\n");
+            end_game = 1;
+        } else if (resultado == JOGADOR_O) {
+            printf("Jogador 2 (O) é o vencedor!\n");
+            end_game = 1;
+        } else if (resultado == VAZIO && qtd_jogadas == 9) {
+            printf("Empate, deu velha!\n");
+            end_game = 1;
+        }
+
+        if (end_game) {
+            do {
+                printf("\nJogar novamente? (S/N)  ");
+                scanf(" %c", &jogar_novamente);
+
+                if (jogar_novamente == 'S') {
+                    p->jogador_atual = jogador_inicio;
+                    qtd_jogadas = 0;
+                    end_game = 0;
+                    tabuleiro_inicializa(&(p->tabuleiro));
+                } else if (jogar_novamente != 'N') {
+                    printf("Opção inválida!\n");
+                }
+            } while (jogar_novamente != 'S' && jogar_novamente != 'N');
+        }
+        
         if (p->jogador_atual == &(p->j1)) {
             p->jogador_atual = &(p->j2);
         } else {
             p->jogador_atual = &(p->j1);
         }
-
-        if (tabuleiro_temVencedor(&(p->tabuleiro)) != VAZIO) {
-            break;
-        }
-    }
-
-    int resultado = tabuleiro_temVencedor(&(p->tabuleiro));
-    if (resultado == JOGADOR_X){
-        printf("Jogador 1 (X) é o vencedor!\n");
-    } else if (resultado == JOGADOR_O) {
-        printf("Jogador 2 (O) é o vencedor!\n");
-    } else {
-        printf("Empate, deu velha!\n");
     }
 }
