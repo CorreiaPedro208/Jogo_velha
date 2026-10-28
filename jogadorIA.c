@@ -66,13 +66,15 @@ int regra1(JogadorIA *j, Tabuleiro *t) {
 
 
 int regra2(JogadorIA *j, Tabuleiro *t) {
-    int qtd_marcacoes, soma_linha, soma_coluna, soma_diagonal;
+    int soma_linha, soma_coluna, soma_diagonal;
 
     for (int i = 0; i < 3; i++) {
         for (int k = 0; k < 3; k++) {
             if (t->tabuleiro[i][k] != VAZIO) {
                 continue;
             }
+
+            int qtd_marcacoes = 0;
             
             soma_linha = t->tabuleiro[i][0] + t->tabuleiro[i][1] + t->tabuleiro[i][2];
             soma_coluna = t->tabuleiro[0][k] + t->tabuleiro[1][k] + t->tabuleiro[2][k];
@@ -98,6 +100,7 @@ int regra2(JogadorIA *j, Tabuleiro *t) {
             }
 
             if (qtd_marcacoes >= 2){
+                tabuleiro_marcaJogada(t, i, k, j->tipo);
                 return 1;
             }
         }
@@ -142,8 +145,8 @@ int regra5(JogadorIA *j, Tabuleiro *t) {
             tabuleiro_marcaJogada(t, linha, coluna, j->tipo);
             return 1;
         }
+    }
     return 0;
-}
 }
 
 int regra6(JogadorIA *j, Tabuleiro *t) {
